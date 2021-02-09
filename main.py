@@ -14,6 +14,8 @@ loop = False
 SONG_END = USEREVENT+1
 SONG_REPEAT = USEREVENT+1
 
+if not os.path.isfile('settings.json'):
+    open('settings.json', 'a').close()
 with open('settings.json','r',encoding='utf8') as jFile:
     jdata = json.load(jFile)
 
