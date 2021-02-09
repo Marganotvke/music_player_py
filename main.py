@@ -6,7 +6,7 @@ import pygame as pg
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from pygame import mixer,USEREVENT, event
 
 play_song = []
@@ -36,18 +36,18 @@ class Ui_MainWindow(object):
         self.stop_but = QtWidgets.QPushButton(self.centralwidget)
         self.stop_but.setObjectName("stop_but")
         self.gridLayout_2.addWidget(self.stop_but, 0, 2, 1, 1)
-        self.backward = QtWidgets.QPushButton(self.centralwidget)
-        self.backward.setObjectName("backward")
-        self.gridLayout_2.addWidget(self.backward, 0, 0, 1, 1)
+        self.backward_b = QtWidgets.QPushButton(self.centralwidget)
+        self.backward_b.setObjectName("backward")
+        self.gridLayout_2.addWidget(self.backward_b, 0, 0, 1, 1)
         self.cont_pau = QtWidgets.QPushButton(self.centralwidget)
         self.cont_pau.setObjectName("cont_pau")
         self.gridLayout_2.addWidget(self.cont_pau, 0, 1, 1, 1)
         self.loop_single = QtWidgets.QCheckBox(self.centralwidget)
         self.loop_single.setObjectName("loop_single")
         self.gridLayout_2.addWidget(self.loop_single, 0, 4, 1, 1)
-        self.forward = QtWidgets.QPushButton(self.centralwidget)
-        self.forward.setObjectName("forward")
-        self.gridLayout_2.addWidget(self.forward, 0, 3, 1, 1)
+        self.forward_b = QtWidgets.QPushButton(self.centralwidget)
+        self.forward_b.setObjectName("forward")
+        self.gridLayout_2.addWidget(self.forward_b, 0, 3, 1, 1)
         self.time_remain = QtWidgets.QLabel(self.centralwidget)
         self.time_remain.setObjectName("time_remain")
         self.gridLayout_2.addWidget(self.time_remain, 1, 3, 1, 1)
@@ -102,18 +102,21 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addItem(spacerItem, 0, 5, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 1, 0, 1, 1)
         self.event_timer = QTimer()
-
+        self.info = QMessageBox()
+        self.info.setWindowTitle("License Information")
+        self.info.setText("MIT License\n\nCopyright (c) 2021 Marganotvke\n\nContact:")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.actionOpen.triggered.connect(lambda: self.open_file())
+        self.actionLisence_Information.triggered.connect(lambda: self.license())
         self.cont_pau.clicked.connect(lambda: self.cur_playing())
         self.volume_ctrl.sliderMoved.connect(lambda: self.change_vol())
         self.volume_ctrl.sliderReleased.connect(lambda: self.vol_write())
         self.stop_but.clicked.connect(lambda: self.stop_playing())
-        self.forward.clicked.connect(lambda: self.forward())
-        self.backward.clicked.connect(lambda: self.backward())
+        self.forward_b.clicked.connect(lambda: self.forward())
+        self.backward_b.clicked.connect(lambda: self.backward())
 
         for e in event.get():
             if e.type == SONG_END:
@@ -126,10 +129,10 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Music Player"))
         self.song_progress.setFormat(_translate("MainWindow", "%p%"))
         self.stop_but.setText(_translate("MainWindow", "Stop"))
-        self.backward.setText(_translate("MainWindow", "Backward"))
+        self.backward_b.setText(_translate("MainWindow", "Backward"))
         self.cont_pau.setText(_translate("MainWindow", "Load Song"))
         self.loop_single.setText(_translate("MainWindow", "Loop"))
-        self.forward.setText(_translate("MainWindow", "Forward"))
+        self.forward_b.setText(_translate("MainWindow", "Forward"))
         self.time_remain.setText(_translate("MainWindow", "Time"))
         self.volume.setText(_translate("MainWindow", f"Volume: {jdata['volume']}"))
         self.playing.setText(_translate("MainWindow", "Currently Playing: None"))
@@ -139,6 +142,9 @@ class Ui_MainWindow(object):
         self.actionLisence_Information.setText(_translate("MainWindow", "License Information"))
         self.actionOpen.setShortcut(_translate("MainWindow", "Ctrl+O"))
 
+    def license(self):
+        self.info.exec_()
+
     def play_next(self):
         mixer.music.unload()
         play_song.pop(0)
@@ -146,6 +152,9 @@ class Ui_MainWindow(object):
             mixer.music.load(play_song[0][1])
             self.playing.setText(f"Currently playing: {play_song[0][0]}")
             mixer.music.play()
+        else:
+            mixer.music.unload()
+            self.playing.setText(f"Currently playing: None")
 
     def stop_playing(self):
         mixer.music.set_endevent()
@@ -167,9 +176,15 @@ class Ui_MainWindow(object):
         if play_song:
             mixer.music.stop()
             self.play_next()
+        else:
+            mixer.music.unload()
+            self.playing.setText(f"Currently playing: None")
 
     def backward(self):
-        mixer.music.rewind()
+        if play_song:
+            mixer.music.rewind()
+        else:
+            pass
 
     def open_file(self):
         global play_song
@@ -201,12 +216,15 @@ class Ui_MainWindow(object):
             jFile.write(json_string)
 
     def handleTimer(self):
-        self.song_progress.setProperty("value",int((mixer.music.get_pos()/play_song[0][2])*100))
-        self.time_remain.setText(f"{int(mixer.music.get_pos()/1000)}/{int(play_song[0][2]/1000)}(s)")
-        if self.loop_single.isChecked():
-            mixer.music.set_endevent(SONG_REPEAT)
+        if play_song:
+            self.song_progress.setProperty("value",int((mixer.music.get_pos()/play_song[0][2])*100))
+            self.time_remain.setText(f"{int(mixer.music.get_pos()/1000)}/{int(play_song[0][2]/1000)}(s)")
+            if self.loop_single.isChecked():
+                mixer.music.set_endevent(SONG_REPEAT)
+            else:
+                mixer.music.set_endevent(SONG_END)
         else:
-            mixer.music.set_endevent(SONG_END)
+            self.event_timer.stop()
 
 if __name__ == "__main__":
     pg.init()
