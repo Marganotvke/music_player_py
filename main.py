@@ -4,8 +4,6 @@ import sys
 import qdarkstyle
 import pygame as pg
 
-# from fbs_runtime.application_context.PyQt5 import ApplicationContext
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
@@ -18,8 +16,11 @@ SONG_REPEAT = USEREVENT+1
 
 if not os.path.isfile('settings.json'):
     open('settings.json', 'a').close()
-with open('settings.json','r') as jFile:
-    jFile.seek(0)
+    with open('settings.json', 'w') as jFile:
+        a = {"volume":100}
+        json_string = json.dumps(a, default=lambda o: o.__dict__, sort_keys=True, indent=2)
+        jFile.write(json_string)
+with open('settings.json', 'r') as jFile:
     jdata = json.load(jFile)
 
 class Ui_MainWindow(object):
