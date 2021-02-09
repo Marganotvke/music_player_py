@@ -4,6 +4,8 @@ import sys
 import qdarkstyle
 import pygame as pg
 
+# from fbs_runtime.application_context.PyQt5 import ApplicationContext
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
@@ -16,7 +18,8 @@ SONG_REPEAT = USEREVENT+1
 
 if not os.path.isfile('settings.json'):
     open('settings.json', 'a').close()
-with open('settings.json','r',encoding='utf8') as jFile:
+with open('settings.json','r') as jFile:
+    jFile.seek(0)
     jdata = json.load(jFile)
 
 class Ui_MainWindow(object):
@@ -136,7 +139,7 @@ class Ui_MainWindow(object):
         self.loop_single.setText(_translate("MainWindow", "Loop"))
         self.forward_b.setText(_translate("MainWindow", "Forward"))
         self.time_remain.setText(_translate("MainWindow", "Time"))
-        self.volume.setText(_translate("MainWindow", f"Volume: {jdata['volume']}"))
+        self.volume.setText(_translate("MainWindow", f"Volume: {jdata['volume']} "))
         self.playing.setText(_translate("MainWindow", "Currently Playing: None"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuAbout.setTitle(_translate("MainWindow", "About"))
@@ -161,6 +164,7 @@ class Ui_MainWindow(object):
     def stop_playing(self):
         mixer.music.set_endevent()
         mixer.music.stop()
+        mixer.music.unload()
         self.playing.setText(f"Currently playing: None")
 
     def cur_playing(self):
@@ -179,6 +183,8 @@ class Ui_MainWindow(object):
             mixer.music.stop()
             self.play_next()
         else:
+            mixer.music.set_endevent()
+            mixer.music.stop()
             mixer.music.unload()
             self.playing.setText(f"Currently playing: None")
 
