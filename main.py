@@ -2,17 +2,14 @@ import json
 import os
 import sys
 import qdarkstyle
-import pygame as pg
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from pygame import mixer,USEREVENT, event
+from pygame import mixer
 
 play_song = []
 loop = False
-SONG_END = USEREVENT+1
-SONG_REPEAT = USEREVENT+1
 
 if not os.path.isfile('settings.json'):
     open('settings.json', 'a').close()
@@ -146,6 +143,13 @@ class Ui_MainWindow(object):
         self.actionLisence_Information.setText(_translate("MainWindow", "License Information"))
         self.actionOpen.setShortcut(_translate("MainWindow", "Ctrl+O"))
 
+    def reset(self):
+        mixer.music.unload()
+        self.playing.setText(f"Currently playing: None")
+        self.cont_pau.setText("Load Song")
+        self.time_remain.setText("Time")
+        self.song_progress.setProperty("value", 0)
+
     def license(self):
         self.info.exec_()
 
@@ -159,17 +163,14 @@ class Ui_MainWindow(object):
             mixer.music.play()
         else:
             mixer.music.unload()
-            self.playing.setText(f"Currently playing: None")
             self.event_timer.stop()
-            self.cont_pau.setText("Load Song")
+            self.reset()
 
     def stop_playing(self):
         global play_song
         mixer.music.stop()
-        mixer.music.unload()
         play_song = []
-        self.playing.setText(f"Currently playing: None")
-        self.cont_pau.setText("Load Song")
+        self.reset()
 
     def cur_playing(self):
         if not play_song:
@@ -188,9 +189,7 @@ class Ui_MainWindow(object):
             self.play_next()
         else:
             mixer.music.stop()
-            mixer.music.unload()
-            self.playing.setText(f"Currently playing: None")
-            self.cont_pau.setText("Load Song")
+            self.reset()
 
     def backward(self):
         if play_song:
@@ -212,7 +211,7 @@ class Ui_MainWindow(object):
             self.time_remain.setText(f"0/{int(play_song[0][2]/1000)}(s)")
             self.cont_pau.setText("Pause")
             self.event_timer.timeout.connect(self.handleTimer)
-            self.event_timer.start(1000)
+            self.event_timer.start(500)
 
     def change_vol(self):
         vol = self.volume_ctrl.value()
@@ -240,7 +239,6 @@ class Ui_MainWindow(object):
                     self.play_next()
 
 if __name__ == "__main__":
-    pg.init()
     mixer.init()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
