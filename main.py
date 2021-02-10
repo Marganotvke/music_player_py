@@ -17,7 +17,7 @@ SONG_REPEAT = USEREVENT+1
 if not os.path.isfile('settings.json'):
     open('settings.json', 'a').close()
     with open('settings.json', 'w') as jFile:
-        a = {"volume":100}
+        a = {"volume":50}
         json_string = json.dumps(a, default=lambda o: o.__dict__, sort_keys=True, indent=2)
         jFile.write(json_string)
 with open('settings.json', 'r') as jFile:
@@ -107,10 +107,13 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 0, 5, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 1, 0, 1, 1)
+
         self.event_timer = QTimer()
         self.info = QMessageBox()
         self.info.setWindowTitle("License Information")
-        self.info.setText("MIT License\n\nCopyright (c) 2021 Marganotvke\n\nContact:")
+        self.info.setText("MIT License\n\nCopyright (c) 2021 Marganotvke")
+
+        mixer.music.set_volume(jdata["volume"]/100)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -124,11 +127,6 @@ class Ui_MainWindow(object):
         self.forward_b.clicked.connect(lambda: self.forward())
         self.backward_b.clicked.connect(lambda: self.backward())
 
-        for e in event.get():
-            if e.type == SONG_END:
-                self.play_next()
-            elif e.type == SONG_REPEAT:
-                mixer.music.rewind()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -152,6 +150,7 @@ class Ui_MainWindow(object):
         self.info.exec_()
 
     def play_next(self):
+        global play_song
         mixer.music.unload()
         play_song.pop(0)
         if play_song:
@@ -161,12 +160,16 @@ class Ui_MainWindow(object):
         else:
             mixer.music.unload()
             self.playing.setText(f"Currently playing: None")
+            self.event_timer.stop()
+            self.cont_pau.setText("Load Song")
 
     def stop_playing(self):
-        mixer.music.set_endevent()
+        global play_song
         mixer.music.stop()
         mixer.music.unload()
+        play_song = []
         self.playing.setText(f"Currently playing: None")
+        self.cont_pau.setText("Load Song")
 
     def cur_playing(self):
         if not play_song:
@@ -184,14 +187,15 @@ class Ui_MainWindow(object):
             mixer.music.stop()
             self.play_next()
         else:
-            mixer.music.set_endevent()
             mixer.music.stop()
             mixer.music.unload()
             self.playing.setText(f"Currently playing: None")
+            self.cont_pau.setText("Load Song")
 
     def backward(self):
         if play_song:
-            mixer.music.rewind()
+            mixer.music.stop()
+            mixer.music.play()
         else:
             pass
 
@@ -226,18 +230,18 @@ class Ui_MainWindow(object):
 
     def handleTimer(self):
         if play_song:
-            self.song_progress.setProperty("value",int((mixer.music.get_pos()/play_song[0][2])*100))
+            t = ((mixer.music.get_pos()/play_song[0][2]))
+            self.song_progress.setProperty("value",t*100)
             self.time_remain.setText(f"{int(mixer.music.get_pos()/1000)}/{int(play_song[0][2]/1000)}(s)")
-            if self.loop_single.isChecked():
-                mixer.music.set_endevent(SONG_REPEAT)
-            else:
-                mixer.music.set_endevent(SONG_END)
-        else:
-            self.event_timer.stop()
+            if t<0:
+                if self.loop_single.isChecked():
+                    mixer.music.play()
+                elif not self.loop_single.isChecked():
+                    self.play_next()
 
 if __name__ == "__main__":
     pg.init()
-    mixer.music.set_volume(jdata["volume"])
+    mixer.init()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     app.setStyleSheet(qdarkstyle.load_stylesheet())
