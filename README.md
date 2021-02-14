@@ -2,7 +2,7 @@
 A python written music player using pygame and PyQt5. Currently supports .mp3, .wav and .ogg.
 
 Planning on using other modules (e.g. music-player-core from albertz or PyQt5's inbuild QMediaPlayer) instead of pygame for better song control and more support on music file type.
-<br>Also planned to include more functionality, such as song lists (although there's already a song list internally, but I might include it as a visual element such as using QListView), drag and drop, audio visualizer (might not actually do this).
+<br>Also planned to include more functionality, such as audio visualizer (might not actually do this).
 
 ### Changes
 - v0.1: Base
