@@ -212,8 +212,8 @@ class Ui_MainWindow(object):
         global song_cur
         mixer.music.unload()
         self.song_list.takeItem(0)
+        play_song.pop(0)
         if play_song:
-            play_song.pop(0)
             mixer.music.load(play_song[0][1])
             song_cur = play_song[0]
             self.playing.setText(f"Currently playing: {song_cur[0]}")
@@ -271,7 +271,6 @@ class Ui_MainWindow(object):
         global play_song
         if i != -1:
             if i == 0:
-                self.song_list.takeItem(i)
                 self.play_next()
             else:
                 play_song.pop(i)
