@@ -2,7 +2,6 @@ import json
 import os
 import sys
 import qdarkstyle
-import base64
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from PyQt5.QtMultimedia import QMediaPlayer
@@ -146,7 +145,7 @@ class Ui_MainWindow(object):
         self.backward_b.clicked.connect(lambda: self.backward())
         self.song_list.dropped.connect(lambda e: self.start_play(e))
         self.song_list.itemDoubleClicked.connect(lambda: self.jump_start(self.song_list.currentRow()))
-        self.song_list.model().rowsAboutToBeMoved.connect(lambda e,f,g,h,i: self.test(f,i))
+        self.song_list.model().rowsAboutToBeMoved.connect(lambda e,f,g,h,i: self.re_arr(f,i))
         self.delete_song_q.clicked.connect(lambda: self.delete_q(self.song_list.currentRow()))
 
     def retranslateUi(self, MainWindow):
@@ -168,7 +167,7 @@ class Ui_MainWindow(object):
         self.actionLisence_Information.setText(_translate("MainWindow", "License Information"))
         self.actionOpen.setShortcut(_translate("MainWindow", "Ctrl+O"))
 
-    def test(self, e = None,f = None):
+    def re_arr(self, e = None,f = None):
         f -= 1 if self.song_list.count() == f else 0
         play_song.insert(f,play_song.pop(e))
         print(f"rearr: {play_song}")
