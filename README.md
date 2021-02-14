@@ -11,6 +11,7 @@ Planning on using other modules (e.g. music-player-core from albertz or PyQt5's 
 ### Known issue
 > - Can't drag more than one song into the player
 > - Might have weird behavior after internal movement of song queue
+> - Delete Song queue actually not working
 
 ### Windows standalone executable (.exe)
 See release.
