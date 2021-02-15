@@ -5,10 +5,10 @@ Planning on using other modules (e.g. music-player-core from albertz or PyQt5's 
 <br>Also planned to include more functionality, such as audio visualizer (might not actually do this).
 
 ### Button controls
-Backward: Basically play from start. Since currently songs played will be deleted from queue, you can't playback the previous song.
-Pause/Continue: Literally. Load song if no songs are present in the queue.
-Stop: Literally. **Also deletes the whole queue.**
-Forward: Play the next song in queue. Will delete the previously playing song from queue.
+- Backward: Basically play from start. Since currently songs played will be deleted from queue, you can't playback the previous song.
+- Pause/Continue: Literally. Load song if no songs are present in the queue.
+- Stop: Literally. **Also deletes the whole queue.**
+- Forward: Play the next song in queue. Will delete the previously playing song from queue.
 
 ### Changes
 - v0.1: Base
