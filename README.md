@@ -1,4 +1,4 @@
-# music_player_py
+# awful_music_player_py
 It's pretty awful.
 <br>A python written music player using pygame and PyQt5. Currently supports .mp3, .wav and .ogg.
 
