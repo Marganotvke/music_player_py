@@ -1,5 +1,6 @@
 # music_player_py
-A python written music player using pygame and PyQt5. Currently supports .mp3, .wav and .ogg.
+It's pretty awful.
+<br>A python written music player using pygame and PyQt5. Currently supports .mp3, .wav and .ogg.
 
 Planning on using other modules (e.g. music-player-core from albertz or PyQt5's inbuild QMediaPlayer) instead of pygame for better song control and more support on music file type.
 <br>Also planned to include more functionality, such as audio visualizer (might not actually do this).
