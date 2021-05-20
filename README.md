@@ -8,7 +8,7 @@ It's pretty awful. Kinda. Well not quite, but still.
 - Pause/Continue: Literally. Load song if no songs are present in the queue.
 - Stop: Literally.
 - Forward: Play the next song in queue.
-- Playstyle: Select what the playlist while behave.
+- Playstyle: Select what the playlist will behave, e.g. loop/ play current playlist once.
 
 ### Song Queue Controls
 - Drag: Rearrange the song queue. If rearrange the currently playing music, will play the new music in position instead of the originally playing one. Might change the behavior.
