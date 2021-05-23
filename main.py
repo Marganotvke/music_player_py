@@ -249,7 +249,7 @@ class Ui_MainWindow(object):
             self.playlist.previous()
 
     def open_trig(self):
-        filename = QFileDialog.getOpenFileName(None, 'Open File', filter="MPEG-2 (*.mp3);;WAVE Audio (*.wav,*.aif,*.aiff);;MPEG-1/DD/ACC (*.acc);;MIDI (*.mid,*.midi);;Windows Media Audio (*.wma);;Xiph.Org OGG Vorbis (*.ogg);;NeXT SouND (*.snd);;FLAC (*.flac);;All files(*)")
+        filename = QFileDialog.getOpenFileName(None, 'Open File', filter="MPEG-2 (*.mp3);;WAVE Audio (*.wav,*.aif,*.aiff);;MPEG-1/DD/ACC (*.aac);;MIDI (*.mid,*.midi);;Windows Media Audio (*.wma);;Xiph.Org OGG Vorbis (*.ogg);;NeXT SouND (*.snd);;FLAC (*.flac);;All files(*)")
         threading.Thread(target=self.open_file(filename[0])).start()
 
     def open_file(self,file_url):
