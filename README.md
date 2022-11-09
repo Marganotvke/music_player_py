@@ -1,5 +1,5 @@
-# awful_music_player_py
-It's pretty awful. Kinda. Well not quite, but still.
+# music_player_py
+It's pretty average. Kinda. Well not quite, but still.
 <br>A python written music player using PyQt5. Currently supports a lot of file format (e.g. mp3, aac, wav, midi etc.)
 <br>Planned to include more functionality, such as audio visualizer (might not actually do this).
 
